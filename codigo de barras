@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define BARCODE_LENGTH 10
+#define WAREHOUSE_CODE_LENGTH 15
+#define DISCOUNT_RATE 0.20
+
+int CodigoBarras[] = {8949899430, 7653512593, 9383867373, 88392904209};
+
+bool isValidBarcode(int barcode) {
+    return barcode >= 1000000000 && barcode <= 9999999999;
+}
+
+bool isValidWarehouseCode(int warehouseCode) {
+    return warehouseCode == 15 || (warehouseCode >= 100000000000000 && warehouseCode <= 999999999999999);
+}
+
+void applyDiscount(int *value) {
+    float discount = DISCOUNT_RATE * (*value);
+    *value -= (int)discount; // Convert to int for displaying as integer
+}
+
+int main() {
+    int barcode, warehouseCode, value;
+
+    printf("Ingrese el código de barras del producto: ");
+    scanf("%d", &barcode);
+
+    printf("Ingrese el valor del producto: ");
+    scanf("%d", &value);
+
+    printf("Ingrese el código del almacén: ");
+    scanf("%d", &warehouseCode);
+
+    if (!isValidBarcode(barcode)) {
+        printf("Error: El código de barras debe tener exactamente %d dígitos.\n", BARCODE_LENGTH);
+        return 1;
+    }
+
+    if (!isValidWarehouseCode(warehouseCode)) {
+        printf("Error: El código de almacén debe tener exactamente %d dígitos o ser igual a 15.\n", WAREHOUSE_CODE_LENGTH);
+        return 1;
+    }
+
+    bool found = false;
+    for (int i = 0; i < sizeof(CodigoBarras) / sizeof(CodigoBarras[0]); i++) {
+        if (barcode == CodigoBarras[i]) {
+            found = true;
+            break;
+        }
+    }
+
+    if (found) {
+        applyDiscount(&value);
+        printf("¡Felicidades! Tienes un %.0f%% de descuento y el valor te queda en: %d\n", DISCOUNT_RATE * 100, value);
+    } else {
+        printf("El producto no se encontró\n");
+        // Additional actions if the barcode doesn't match
+    }
+
+    return 0;
+}
